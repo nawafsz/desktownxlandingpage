@@ -4,13 +4,45 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (form) {
         form.addEventListener('submit', async (e) => {
-            // Let Formspree handle it naturally or add custom AJAX here
-            // For now, we'll just add a simple visual feedback before submission
+            e.preventDefault();
+            
             const btn = form.querySelector('button');
             const originalText = btn.innerText;
             
             btn.innerText = 'جاري الإرسال...';
             btn.style.opacity = '0.8';
+            btn.disabled = true;
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                // Point this to your DeskTwon backend URL
+                // For local development: http://localhost:5000/api/landing/contact
+                // For production: Update with your actual domain
+                const response = await fetch('http://localhost:5000/api/landing/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('تم التسجيل بنجاح! سنتواصل معك قريباً.');
+                    form.reset();
+                } else {
+                    const result = await response.json();
+                    alert('حدث خطأ أثناء الإرسال: ' + (result.message || 'يرجى المحاولة مرة أخرى.'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ في الاتصال. يرجى التأكد من تشغيل الخادم.');
+            } finally {
+                btn.innerText = originalText;
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            }
         });
     }
 
