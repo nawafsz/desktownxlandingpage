@@ -18,12 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Point this to your DeskTwon backend URL
-                // For local development: http://localhost:5000/api/landing/contact
-                // For production: Update with your actual domain
-                const response = await fetch('http://localhost:5000/api/landing/contact', {
+                // Using temporary tunnel URL for external access
+                const response = await fetch('https://fast-meals-brake.loca.lt/api/landing/contact', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Bypass-Tunnel-Reminder': 'true'
                     },
                     body: JSON.stringify(data)
                 });
